@@ -137,7 +137,7 @@ class Simulator:
 
         import pdb
 #        pdb.set_trace()
-        sol = intgrt.solve_ivp(model, (t[0], t[-1]), r0, t_eval=t, args=params_model, method='BDF')
+        sol = intgrt.solve_ivp(model, (t[0], t[-1]), r0, t_eval=t, args=params_model, method='LSODA')
 #        r = intgrt.odeint(model, r0, t, args=params_model, atol=1.49012e-11, rtol=1.49012e-11)
         r = sol.y
         return t, r
