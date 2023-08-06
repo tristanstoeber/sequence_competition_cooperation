@@ -1,3 +1,11 @@
+import re
+import os
+import inspect
+import ast
+import types
+from sympy import symbols, Matrix, solve, Eq, lambdify, latex
+
+
 def save_function(func, func_name=None, filename=None, docstring=None):
     """
     Save the function to a python file.
@@ -58,11 +66,17 @@ def create_function(expr):
     # Get the names of the parameters from the expression
     param_names = list(expr.free_symbols)
     param_names = [str(p) for p in param_names]
-
+    
     # Clean the names for python
-    param_names_clean = [re.sub('[{}]', '', p) for p in param_names]
-    param_names_clean = [re.sub('\^', '__', p) for p in param_names_clean]
-
+    param_names_clean = []
+    for p in param_names:
+        p = re.sub('[{}]', '', p)
+        p = re.sub('\^', '__', p)
+        p = p.replace('\x00', '')
+        p = p.replace('-', '_minus_')
+        p = p.replace(',', '')
+        param_names_clean.append(p)
+    
     # Replace the parameters in the expression with the cleaned names
     expr_clean = expr
     for p_old, p_new in zip(param_names, param_names_clean):
@@ -74,38 +88,38 @@ def create_function(expr):
     # Create a detailed docstring
     docstring = f"Function corresponding to the equation {expr}.\n"
     docstring += "\nArguments:\n"
-    for var in param_names:
+    for var in param_names_clean:
         docstring += f"- {var}: Value for the variable '{var}' in the equation.\n"
     f.__doc__ = docstring
 
     return f
-
-def minimal_p_rc(c, p__11_ff, g__11_ff, M__1, g_rc):
-    """Function corresponding to the equation (-M^1*c*g^{11}_{ff}*p^{11}_{ff} + 1)/(M^1**2*c**2*g^{11}_{ff}*g_rc*p^{11}_{ff}).
+def minimal_p_rc(g__11_ff, c, M__E1, g_rc, p__11_ff):
+    """Function corresponding to the equation (-M^{E,1}*c*g^{11}_{ff}*p^{11}_{ff} + 1)/(M^{E,1}**2*c**2*g^{11}_{ff}*g_rc*p^{11}_{ff}).
 
 Arguments:
+- g__11_ff: Value for the variable 'g__11_ff' in the equation.
 - c: Value for the variable 'c' in the equation.
-- p^{11}_{ff}: Value for the variable 'p^{11}_{ff}' in the equation.
-- g^{11}_{ff}: Value for the variable 'g^{11}_{ff}' in the equation.
-- M^1: Value for the variable 'M^1' in the equation.
+- M__E1: Value for the variable 'M__E1' in the equation.
 - g_rc: Value for the variable 'g_rc' in the equation.
+- p__11_ff: Value for the variable 'p__11_ff' in the equation.
 """
 
-    return ((-M__1*c*g__11_ff*p__11_ff + 1)/(M__1**2*c**2*g__11_ff*g_rc*p__11_ff))
+    return ((-M__E1*c*g__11_ff*p__11_ff + 1)/(M__E1**2*c**2*g__11_ff*g_rc*p__11_ff))
 
-def minimal_p_11ff_2seqs(c, M__0, p_rc, g__11_ff, M__1, g__01_ffi, p_ffi, g_rc):
-    """Function corresponding to the equation (M^0*M^1*c**2*g^{01}_{ffi}*g_rc*p_ffi*p_rc + 1)/(M^1*c*g^{11}_{ff}*(M^1*c*g_rc*p_rc + 1)).
+def minimal_p_11ff_2seqs(g__11_ff, c, M__E1, r__E0_i_minus_1, p_rc, g__01_ffi, p_ffi, M__E0, g_rc):
+    """Function corresponding to the equation (M^{E,0}*M^{E,1}*c**2*g^{01}_{ffi}*g_rc*p_ffi*p_rc*r^{E,0}_{i-1} + 1)/(M^{E,1}*c*g^{11}_{ff}*(M^{E,1}*c*g_rc*p_rc + 1)).
 
 Arguments:
+- g__11_ff: Value for the variable 'g__11_ff' in the equation.
 - c: Value for the variable 'c' in the equation.
-- M^0: Value for the variable 'M^0' in the equation.
+- M__E1: Value for the variable 'M__E1' in the equation.
+- r__E0_i_minus_1: Value for the variable 'r__E0_i_minus_1' in the equation.
 - p_rc: Value for the variable 'p_rc' in the equation.
-- g^{11}_{ff}: Value for the variable 'g^{11}_{ff}' in the equation.
-- M^1: Value for the variable 'M^1' in the equation.
-- g^{01}_{ffi}: Value for the variable 'g^{01}_{ffi}' in the equation.
+- g__01_ffi: Value for the variable 'g__01_ffi' in the equation.
 - p_ffi: Value for the variable 'p_ffi' in the equation.
+- M__E0: Value for the variable 'M__E0' in the equation.
 - g_rc: Value for the variable 'g_rc' in the equation.
 """
 
-    return ((M__0*M__1*c**2*g__01_ffi*g_rc*p_ffi*p_rc + 1)/(M__1*c*g__11_ff*(M__1*c*g_rc*p_rc + 1)))
+    return ((M__E0*M__E1*c**2*g__01_ffi*g_rc*p_ffi*p_rc*r__E0_i_minus_1 + 1)/(M__E1*c*g__11_ff*(M__E1*c*g_rc*p_rc + 1)))
 

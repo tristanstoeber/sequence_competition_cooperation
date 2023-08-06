@@ -135,9 +135,6 @@ class Simulator:
         for i, seq_i in enumerate(p['seqs']):
             r0[seq_i[0]*2] = p['r0'][i]
 
-        import pdb
-#        pdb.set_trace()
         sol = intgrt.solve_ivp(model, (t[0], t[-1]), r0, t_eval=t, args=params_model, method='LSODA')
-#        r = intgrt.odeint(model, r0, t, args=params_model, atol=1.49012e-11, rtol=1.49012e-11)
         r = sol.y
         return t, r

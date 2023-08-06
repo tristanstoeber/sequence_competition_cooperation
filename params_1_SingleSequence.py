@@ -5,7 +5,7 @@ params = {
     'nE': [800,],
     'nI': [200,],    
     'tau': [0.2, 0.2],
-    'a': 0.001,
+    'a': 1e-7,
 #    'k':  *2.96/4., # inhibitory scaling factor
     'gE': 0.2,  # synaptic strength
     'gI': .7,  # synaptic strength    
@@ -20,8 +20,7 @@ params = {
     # Simulation
     'r0': [0.5,],
     't': np.arange(0, 20., 0.02),
-#    't': np.arange(0, 10., 0.05),    
-   'range_p_rc': np.arange(0., 0.1, 0.001),
+    'range_p_rc': np.arange(0., 0.1, 0.001),
     'range_p_ff': np.arange(0., 0.1, 0.001),
 #    'range_p_rc': np.arange(0., 0.1, 0.002),
 #    'range_p_ff': np.arange(0., 0.1, 0.002),
@@ -30,12 +29,15 @@ params = {
     'r_sel': [
         {'p_rc': 0.00, 'p_ff': 0.01},
         {'p_rc': 0.02, 'p_ff': 0.01},
-        {'p_rc': 0.045, 'p_ff': 0.01},
+        {'p_rc': 0.035, 'p_ff': 0.01},
         {'p_rc': 0.06, 'p_ff': 0.01},
         {'p_rc': 0.06, 'p_ff': 0.06}],
     # analysis
-    'r_min': 1e-4,  # node below value will be considered silent
-    'tol': 1e-4
+    'r_min': 1e-2,  # node below value will be considered silent
+    'tol': 1e-4, # tolerance
+
+    # linear approximation
+    'c': 0.163
     }
 
 

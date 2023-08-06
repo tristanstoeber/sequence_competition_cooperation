@@ -2,10 +2,10 @@ import numpy as np
 
 params = {
     # Assembly
-    'nE': [1000, 908],
-    'nI': [250, 227],    
+    'nE': [1000, 896],
+    'nI': [250, 224],    
     'tau': [0.2, 0.2],
-    'a': 0.001,
+    'a': 0.,
 #    'k':  *2.96/4., # inhibitory scaling factor
     'gE': 0.2,  # synaptic strength
     'gI': .7,  # synaptic strength    
@@ -38,7 +38,7 @@ params = {
         [10, 10]
     ],
     # analysis
-    'r_min': 1e-4,  # node below value will be considered silent
-    'tol': 1e-4  
+    'r_min': 1e-2,  # node below value will be considered silent
+    'tol': 1e-4
     }
 
