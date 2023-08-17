@@ -69,41 +69,75 @@ class Simulator:
             }
 
     def pair_sequences(self,
-                       pos_seq0=1,
-                       pos_seq1=2,
-                       pot=None,
+                       pos_sender=1,
+                       pos_target=2,
+                       pot=0.,
+                       delta_assembly=0,
                        type_proj=['EE']):
+
+        """
+        Generate a coupling matrix based on sender and target sequences and update interaction matrix of self.
+
+        Parameters:
+        - pos_sender (int): Position of the sender in sequences.
+        - pos_target (int): Position of the target in sequences.
+        - pot: Potentiation of synapses according to pot*nE*gE*p, p=p_ff if type_proj=EE or p=p_ff_i if type_proj=EI).
+        - delta_assembly (int): Offset for pairing subsequent assemblies.
+        - type_proj (list): Projection types, can include excitatory to 
+                            excitatory 'EE' and/or excitatory to inhibitory 'EI' projections. 
+
+        Updates:
+        - self.M: Update the interaction matrix with the newly coupling matrix.
+        - self.M_other: Update or set 'M_cpl' key with the newly coupling matrix.
+        """
+        # Extract parameters from the class instance
         p = self.p
 
-        if not pot:
-            pot = self.p['pot_pairing']            
-
-        seq0 = p['seqs'][pos_seq0]
-        seq1 = p['seqs'][pos_seq1]        
-        
+        # Get number of all populations
         n_ass = len(np.concatenate(p['seqs']))
+
+        # Initialize full coupling matrix
+        M_cpl = np.zeros((n_ass * 2, n_ass * 2))        
         
-        M_cpl = np.zeros((n_ass*2, n_ass*2))
+        # Extract sequences based on provided positions
+        seq_sender = np.array(p['seqs'][pos_sender])
+        seq_target = np.array(p['seqs'][pos_target])
+        
+        # Cut according to shift
+        seq_sender = seq_sender if delta_assembly == 0 else seq_sender[:-delta_assembly] 
+        seq_target = seq_target[delta_assembly:]
+        
+        # Define sender target pairs
+        pairs = zip(
+            seq_sender, 
+            seq_target
+        )
 
+        def update_M_cpl(w, offset_i=0, offset_j=0):
+            """Nested function to update the coupling matrix."""
+            for i, j in pairs:
+                M_cpl[i*2 + offset_i, j*2 + offset_j] += w
+                
+        # Update matrix based on projection type
         if 'EE' in type_proj:
-            w0 = pot[0]*p['nE'][pos_seq0]*p['gE']
-            w1 = pot[1]*p['nE'][pos_seq1]*p['gE']
-
-            pairs = zip(seq0, seq1)
-            for i, j in pairs:
-                M_cpl[i*2, j*2] = M_cpl[i*2, j*2] + w0
-                M_cpl[j*2, i*2] = M_cpl[j*2, i*2] + w1
-
+            w = pot * p['p_ff'] * p['nE'][pos_sender] * p['gE']
+            update_M_cpl(w, 0, 0)
+            
         if 'EI' in type_proj:
-            w0 = pot[0]*p['nE'][pos_seq0]*p['gE']
-            w1 = pot[1]*p['nE'][pos_seq1]*p['gE']
-            pairs = zip(seq0, seq1)
-            for i, j in pairs:
-                M_cpl[i*2, j*2+1] += w0
-                M_cpl[j*2, i*2+1] += w1
-
-        self.M = self.M + M_cpl
-        self.M_other['M_cpl'] = M_cpl
+            w = pot * p['p_ffi'] * p['nE'][pos_sender] * p['gE']
+            update_M_cpl(w, 1, 0)
+        
+        # Update the interaction matrix of the class instance
+        self.M += M_cpl  
+    
+        # Check if 'M_cpl' is already a key in M_other
+        if 'M_cpl' in self.M_other:
+            # If it is, add the value of M_cpl to the existing value
+            self.M_other['M_cpl'] = self.M_other['M_cpl'] + M_cpl
+        else:
+            # If it's not present, set the key 'M_cpl' in M_other to the value of M_cpl
+            self.M_other['M_cpl'] = M_cpl
+ 
         
     def run(self,
             model=None,

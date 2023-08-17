@@ -5,7 +5,7 @@ params = {
     'nE': [1000, 908],
     'nI': [250, 227],     
     'tau': [0.2, 0.2],
-    'a': 0.,
+    'a': 1e-7,
 #    'k':  *2.96/4., # inhibitory scaling factor
     'gE': 0.2,  # synaptic strength
     'gI': .7,  # synaptic strength    
