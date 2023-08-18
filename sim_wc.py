@@ -115,8 +115,8 @@ class Simulator:
 
         def update_M_cpl(w, offset_i=0, offset_j=0):
             """Nested function to update the coupling matrix."""
-            for i, j in pairs:
-                M_cpl[i*2 + offset_i, j*2 + offset_j] += w
+            for sndr, trgt in pairs:
+                M_cpl[trgt*2 + offset_i, sndr*2 + offset_j] += w
                 
         # Update matrix based on projection type
         if 'EE' in type_proj:
