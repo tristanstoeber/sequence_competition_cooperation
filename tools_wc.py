@@ -4,6 +4,122 @@ import pickle
 import importlib.util
 import os
 
+def inter_peak_intervals(r, r_min, resolution, dt):
+    """
+    Calculate inter peak intervals.
+    
+    Parameters
+    ----------
+    r : numpy.ndarray
+        2D array with shape (n_ts, n_ass) where:
+        - n_ts: Number of timepoints
+        - n_ass: Number of assemblies.
+        The array represents the activity of assemblies across timepoints.
+    r_min : float
+        Minimal activity threshold for an assembly to be considered active.
+    resolution : float
+        Maximal resolution. The smallest distinguishable difference between values in 'r'.
+    dt : float
+        Timestep. The time difference between consecutive timepoints.
+        
+    Returns
+    -------
+    intrvls : list of floats
+        List containing the inter-peak intervals in time units.
+    """
+    # Calculate max decimals based on resolution
+    max_decimals = -int(np.floor(np.log10(resolution)))
+    
+    # Limit decimals using np.around
+    r = np.around(r, max_decimals)
+    
+    # Set values below r_min to 0
+    r[r < r_min] = 0.
+    
+    # Find the indices of the maximum values along each assembly's time series
+    peak_idcs = np.argmax(r, axis=0)
+    
+    # Remove not activated peaks
+    peak_idcs = remove_trailing_zeros(peak_idcs, first_n_protected=2)
+    
+    # Calculate the intervals between consecutive peaks
+    intrvls_idcs = np.diff(peak_idcs)
+    
+    # Convert the interval indices to time units
+    intrvls = intrvls_idcs * dt
+
+    return intrvls
+
+    
+def remove_trailing_zeros(arr, first_n_protected=2):
+    """
+    Remove trailing zeros from an array while protecting the first n entries from removal.
+
+    Parameters
+    ----------
+    arr : numpy.ndarray
+        Input array from which trailing zeros are to be removed.
+    
+    first_n_protected : int, optional (default=2)
+        Number of entries at the beginning of the array that should remain 
+        protected from removal, regardless of their values.
+
+    Returns
+    -------
+    numpy.ndarray
+        Array with trailing zeros removed, while preserving the first n protected entries.
+
+    Examples
+    --------
+    >>> remove_trailing_zeros(np.array([0, 0, 1, 2, 0, 0]), 2)
+    array([0, 0, 1, 2])
+
+    >>> remove_trailing_zeros(np.array([0, 0, 1, 0, 0]), 3)
+    array([0, 0, 1])
+    """
+
+    # If the length of the array is less than or equal to the protected entries, return it as is
+    if len(arr) <= first_n_protected:
+        return arr
+
+    # Extract the array excluding the protected entries
+    sub_arr = arr[first_n_protected:]
+
+    # Find the last non-zero element's index for the sub-array
+    last_non_zero = np.where(sub_arr != 0)[0]
+    
+    # If there are no non-zero elements in the sub-array
+    if last_non_zero.size == 0:
+        return arr[:first_n_protected]  # Return only the protected entries
+    
+    # Combine the protected entries of the original array with the processed sub-array
+    return np.concatenate((arr[:first_n_protected], sub_arr[:last_non_zero[-1]+1]))
+
+def sequence_speed(r, r_min, resolution, dt):
+    """
+    we define sequence speed as the inverse of the median inter peak interval
+    
+    Parameters
+    ----------
+    r : numpy.ndarray (n_ts, n_ass)
+       2d array with n_ts, number of timepoints, and n_ass, number of assemblies.
+    r_min : float
+       Minimal activity to be counted active
+    resolution : float
+        Maximal resolution. The smallest distinguishable difference between values in 'r'.
+    dt : float
+       timstep
+
+    Returns
+    ---------
+    speed : float
+       sequence speed
+    """
+    
+    intrvls = inter_peak_intervals(r, r_min, resolution, dt)
+    speed = 1./np.median(intrvls)
+    
+    return speed
 
 def import_if_exists(module_name, function_name):
     module_path = f"./{module_name}.py"
