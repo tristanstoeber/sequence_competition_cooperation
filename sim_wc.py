@@ -3,13 +3,12 @@ import os
 import scipy.integrate as intgrt
 import copy
 
-def activation_function(x, a=0.001):
+def activation_function(x, a=0.001, peak_rate=30.):
     x = x-a
-    return np.maximum(0, x/np.sqrt(x**2+1))
+    return np.maximum(0, x/np.sqrt((x/peak_rate)**2+peak_rate))
 
-def drdt(t, r, M, s, tau, a):
-    return (-r + s(np.dot(M, r), a)) / tau
-
+def drdt(t, r, M, s, tau, a, peak_rate):
+    return (-r + s(np.dot(M, r), a, peak_rate)) / tau
 
 class Simulator:
     def __init__(self, params: dict, **kwargs):
@@ -151,6 +150,7 @@ class Simulator:
         tau = np.array(p['tau']*n_ass)
         a = p['a']
         t = p['t']
+        peak_rate = p['peak_rate']
         
         if not model:
             model = drdt
@@ -162,7 +162,7 @@ class Simulator:
             actfun = activation_function
 
         if not params_model:
-            params_model = (self.M, actfun, tau, a)
+            params_model = (self.M, actfun, tau, a, peak_rate)
 
         r0 = np.zeros(n_ass*2)
 

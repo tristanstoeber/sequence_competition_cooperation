@@ -106,20 +106,31 @@ Arguments:
 
     return ((-M__E1*c*g__11_ff*p__11_ff + 1)/(M__E1**2*c**2*g__11_ff*g_rc*p__11_ff))
 
-def minimal_p_11ff_2seqs(g__11_ff, c, M__E1, r__E0_i_minus_1, p_rc, g__01_ffi, p_ffi, M__E0, g_rc):
-    """Function corresponding to the equation (M^{E,0}*M^{E,1}*c**2*g^{01}_{ffi}*g_rc*p_ffi*p_rc*r^{E,0}_{i-1} + 1)/(M^{E,1}*c*g^{11}_{ff}*(M^{E,1}*c*g_rc*p_rc + 1)).
+def minimal_p_11ff_2seqs_comp(g__11_ff, c, M__E1, p_rc, g__01_ffi, p_ffi, M__E0, g_rc):
+    """Function corresponding to the equation (\frac{M^{E,0} M^{E,1} c^{2} g^{01}_{ffi} g_{rc} p_{ffi} p_{rc} + 1}{M^{E,1} c g^{11}_{ff} \left(M^{E,1} c g_{rc} p_{rc} + 1\right)}.
+    Arguments:
+    - g__11_ff: Value for the variable 'g__11_ff' in the equation.
+    - c: Value for the variable 'c' in the equation.
+    - M__E1: Value for the variable 'M__E1' in the equation.
+    - p_rc: Value for the variable 'p_rc' in the equation.
+    - g__01_ffi: Value for the variable 'g__01_ffi' in the equation.
+    - p_ffi: Value for the variable 'p_ffi' in the equation.
+    - M__E0: Value for the variable 'M__E0' in the equation.
+    - g_rc: Value for the variable 'g_rc' in the equation.
+    """
 
-Arguments:
-- g__11_ff: Value for the variable 'g__11_ff' in the equation.
-- c: Value for the variable 'c' in the equation.
-- M__E1: Value for the variable 'M__E1' in the equation.
-- r__E0_i_minus_1: Value for the variable 'r__E0_i_minus_1' in the equation.
-- p_rc: Value for the variable 'p_rc' in the equation.
-- g__01_ffi: Value for the variable 'g__01_ffi' in the equation.
-- p_ffi: Value for the variable 'p_ffi' in the equation.
-- M__E0: Value for the variable 'M__E0' in the equation.
-- g_rc: Value for the variable 'g_rc' in the equation.
-"""
+    return ((M__E0*M__E1*c**2*g__01_ffi*g_rc*p_ffi*p_rc* + 1)/(M__E1*c*g__11_ff*(M__E1*c*g_rc*p_rc + 1)))
 
-    return ((M__E0*M__E1*c**2*g__01_ffi*g_rc*p_ffi*p_rc*r__E0_i_minus_1 + 1)/(M__E1*c*g__11_ff*(M__E1*c*g_rc*p_rc + 1)))
+
+def minimal_p_11ff_2seqs_nocomp(g__11_ff, c, M__E1, p_rc, g_rc):
+    """Function corresponding to the equation \frac{1}{M^{E,1} c g^{11}_{ff} \left(M^{E,1} c g_{rc} p_{rc} + 1\right)}.
+    Arguments:
+    - g__11_ff: Value for the variable 'g__11_ff' in the equation.
+    - c: Value for the variable 'c' in the equation.
+    - M__E1: Value for the variable 'M__E1' in the equation.
+    - p_rc: Value for the variable 'p_rc' in the equation.
+    - g_rc: Value for the variable 'g_rc' in the equation.
+    """
+
+    return (1./(M__E1*c*g__11_ff*(M__E1*c*g_rc*p_rc + 1)))
 

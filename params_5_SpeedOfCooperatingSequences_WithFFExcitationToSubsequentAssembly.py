@@ -4,12 +4,14 @@ params = {
     # Assembly
     'nE': [1000, 500, 500],
     'nI': [250, 125, 125],    
-    'tau': [0.2, 0.2],
+    'tau': [0.5, 0.5],
     'a': 1e-7,
-#    'k':  *2.96/4., # inhibitory scaling factor
-    'gE': 0.2,  # synaptic strength
-    'gI': .7,  # synaptic strength    
+    'b': 1.,
+    #    'k':  *2.96/4., # inhibitory scaling factor
+    'gE': .6,  # synaptic strength
+    'gI': 2.1,  # synaptic strength    
     'p_rc': 0.05, # recurrent connection probability
+    'peak_rate': 30, # peak firing rate of neurons
     'params_actfun': {'a': [1.5, 1.5],
                       'b': [2., 2.],
                       'c': [3., 3.]},
@@ -23,10 +25,10 @@ params = {
     'pot_ff': [2.0, 2.0, 2.0], # multiplicative potentiation of feedforward connections
     'pot_pairing': [0.016, .016],
     # Simulation
-    'r0': [0.5, 0.5, 0.5],
-    't': np.arange(0, 50., 0.02),
+    'r0': [15, 15, 15],
+    't': np.arange(0, 200., 0.04),
 
-    'r_min': 1e-2,  # node below value will be considered silent
+    'r_min': 0.3,  # node below value will be considered silent
     'tol': 1e-4,
     
     'range_pot_pairing_EE': np.arange(0, 4, .1),

@@ -236,7 +236,7 @@ def peak_criterium(r, r_min, seq, tol, return_conds=None, verbose=False):
         return crit, cond0, cond1, cond2, cond3
     else:
         return crit
-
+    
 def mean_activation_time(r, r_min, dt):
     """
     calculate mean time assemblies are above minimal activity level.
@@ -255,13 +255,34 @@ def mean_activation_time(r, r_min, dt):
     mean_t_act : float
        Mean activation time across assemblies
     """
-
-    act_bool = r >= r_min
-    n_act = np.sum(act_bool, axis=0)
-    t_act = n_act * dt
+    t_act = activation_times(r, r_min, dt)
     mean_t_act = np.mean(t_act)
     
     return mean_t_act
+
+def activation_times(r, r_min, dt):
+    """
+    calculate time assemblies are above minimal activity level.
+    
+    Parameters
+    ----------
+    r : numpy.ndarray (n_ts, n_ass)
+       2d array with n_ts, number of timepoints, and n_ass, number of assemblies.
+    r_min : float
+       Minimal activity to be counted active
+    dt : float
+       timstep
+
+    Returns
+    ---------
+    t_acts : float
+       activation times
+    """
+    act_bool = r >= r_min
+    n_act = np.sum(act_bool, axis=0)
+    t_act = n_act * dt
+    
+    return t_act
 
 def number_active(r, r_min):
     """
