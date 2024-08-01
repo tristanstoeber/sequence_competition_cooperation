@@ -41,7 +41,7 @@ params = {
     'r_min': 0.3,  # node below value will be considered silent
     'tol': 1e-4, # tolerance
     # linear approximation
-    'c': 0.055,
+    # 'c': 0.055,
     }
 
 
