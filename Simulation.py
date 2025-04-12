@@ -51,8 +51,8 @@ class Simulation() :
         WEAK_SIZE_E = self.params["WEAK_SIZE_E"]
         WEAK_SIZE_I = self.params["WEAK_SIZE_I"]
 
-        EI_W = self.params["EI_W"]
-        IE_W = self.params["IE_W"]
+        EI_W = self.params["EI_W"] / 2.5
+        IE_W = self.params["IE_W"] / 2.5
 
         P_RC = self.params["P_RC"]
         P_FF = self.params["P_FF"]
@@ -85,8 +85,8 @@ class Simulation() :
         )
 
         config = {
-            "EI_W" : EI_W,
-            "IE_W" : IE_W,
+            "EI_W" : EI_W / 1.4,
+            "IE_W" : IE_W / 1.4,
             "P_RC" : P_RC,
             "P_FF" : P_FF,
             "P_FF_I" : P_FF_I,
@@ -108,14 +108,14 @@ class Simulation() :
             config = config   
         )
 
-        strong_seq.compete(weak_seq_1, P_FF_Comp = 0.04)
-        strong_seq.compete(weak_seq_2, P_FF_Comp = 0.04)
+        strong_seq.compete(weak_seq_1, P_FF_Comp = 0.045)
+        strong_seq.compete(weak_seq_2, P_FF_Comp = 0.045)
 
-        weak_seq_1.compete(strong_seq, P_FF_Comp = 0.04)
-        weak_seq_1.compete(weak_seq_2, P_FF_Comp = 0.04)
+        weak_seq_1.compete(strong_seq, P_FF_Comp = 0.045)
+        weak_seq_1.compete(weak_seq_2, P_FF_Comp = 0.045)
 
-        weak_seq_2.compete(strong_seq, P_FF_Comp = 0.04)
-        weak_seq_2.compete(weak_seq_1, P_FF_Comp = 0.04)
+        weak_seq_2.compete(strong_seq, P_FF_Comp = 0.045)
+        weak_seq_2.compete(weak_seq_1, P_FF_Comp = 0.045)
 
         weak_seq_1.cooperate(weak_seq_2, P_FF_Coop = self.coop_12, P_FF_Coop_Delta_0 = self.coop_12)
         weak_seq_2.cooperate(weak_seq_1, P_FF_Coop = self.coop_21, P_FF_Coop_Delta_0 = self.coop_21)
