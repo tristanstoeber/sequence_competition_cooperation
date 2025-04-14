@@ -12,7 +12,7 @@ class InitialActivation(Behavior) :
         if(ng.network.iteration > 10) : 
             return
 
-        for i in range(100) : 
+        for i in range(160) : 
             ng.I[np.random.randint(ng.size)] += 1000
 
 class BackgroundActivity(Behavior) : 
@@ -24,7 +24,18 @@ class BackgroundActivity(Behavior) :
     def forward(self, ng) :
         
         background_spikes = ng.vector(mode = "random") < self.rate
-        ng.spikes |= background_spikes
+        ng.spikes
+
+class BackgroundActivityCurrentBased(Behavior) : 
+
+    def initialize(self, ng) : 
+        
+        self.rate = self.parameter("rate", 0.01)
+
+    def forward(self, ng) :
+        
+        background_spikes = ng.vector(mode = "random") < self.rate
+        ng.I[background_spikes] += 300
 
 
 
@@ -37,17 +48,17 @@ class Sequence() :
         self.size_i = size_i
         self.config = config
 
-        self.config["W_RC_E"] = self.size_e * self.config["P_RC"] * self.config["EI_W"]
-        self.config["W_RC_I"] = self.size_i * self.config["P_RC"] * self.config["IE_W"]
+        self.config["W_RC_E"] = 44 * self.config["EI_W"]
+        self.config["W_RC_I"] = 11 * self.config["IE_W"]
 
         self.config["P_FF_Coop"] = self.config["P_FF"]
-        self.config["W_FF_Coop"] = self.size_e * self.config["P_FF_Coop"] * self.config["EI_W"]
+        self.config["W_FF_Coop"] = 45 * self.config["EI_W"]
 
         self.config["P_FF_Comp"] = self.config["P_FF_I"]
-        self.config["W_FF_Comp"] = self.size_e * self.config["P_FF_Comp"] * self.config["EI_W"]
+        self.config["W_FF_Comp"] = 45 * self.config["EI_W"]
 
-        self.config["W_FF_E"] = self.size_e * self.config["P_FF"] * self.config["EI_W"]
-        self.config["W_FF_I"] = self.size_i * self.config["P_FF"] * self.config["EI_W"]
+        self.config["W_FF_E"] = 45 * self.config["EI_W"]
+        self.config["W_FF_I"] = 11.25 * self.config["EI_W"]
         
         self.net = net
         self.assemblies = []
@@ -66,10 +77,10 @@ class Sequence() :
                     SimpleDendriteStructure(),
                     SimpleDendriteComputation(),
                     LIF(
-                        init_v = torch.rand(self.size_e) * -50 - 25,
+                        init_v = torch.rand(self.size_e) * -50 - 50,
                         tau = 7,
                         R = 0.55,
-                        threshold = -15,
+                        threshold = -45,
                         v_rest = -65,
                         v_reset = -70,
                     ),
@@ -77,7 +88,7 @@ class Sequence() :
                     KWTA(k = self.size_e // 2),
                     NeuronAxon(),
                 ]) | {
-                    341 : BackgroundActivity(),
+                    259 : BackgroundActivityCurrentBased(),
                     600 : Recorder(["torch.sum(spikes)", "v"]),
                     601 : EventRecorder(["spikes"])
                 },
@@ -94,7 +105,7 @@ class Sequence() :
                         init_v = -65,
                         tau = 4,
                         R = 1,
-                        threshold = -15,
+                        threshold = -45,
                         v_rest = -65,
                         v_reset = -70,
                     ),
@@ -204,6 +215,23 @@ class Sequence() :
         
         self.config["W_FF_Comp"] = self.size_e * self.config["P_FF_Comp"] * self.config["EI_W"]
 
+        # for i in range(self.n_assemblies) :
+        #     for j in range(self.n_assemblies) : 
+        #         if(i == j) :
+        #             continue
+
+        #         sg_ei_comp = SynapseGroup(
+        #             net = self.net,
+        #             src = self.assemblies[i][0],
+        #             dst = seq.assemblies[j][1],
+        #             behavior = prioritize_behaviors([
+        #                 SimpleDendriticInput(),
+        #                 SynapseInit(),
+        #                 WeightInitializer(mode = "ones", scale = self.config["W_FF_Comp"], density = self.config["P_FF_Comp"], true_sparsity = False),
+        #             ]),
+        #             tag = "rc, Proximal",
+        #         )
+
         for i in range(self.n_assemblies) :
 
             sg_ei_curr = SynapseGroup(
@@ -238,7 +266,7 @@ class Sequence() :
         if(P_FF_Coop != None) : 
             self.config["P_FF_Coop"] = P_FF_Coop
 
-        self.config["W_FF_Coop"] = self.size_e * self.config["P_FF_Coop"] * self.config["EI_W"]
+        self.config["W_FF_Coop"] = 45 * self.config["EI_W"]
 
         delta_zero = P_FF_Coop_Delta_0 
         if(P_FF_Coop_Delta_0 == None) : 
