@@ -2,14 +2,14 @@ import torch
 from pymonntorch import *
 from conex import *
 import numpy as np
-from Sequence import Sequence
+from Sequence_suppl import Sequence
 
 
 def get_winner(weak1, weak2, strong) : 
 
-    weak1_win = (torch.max(weak1.assemblies[-1][0]["torch.sum(spikes)"][0]) / weak1.size_e > 0.2).item()
-    weak2_win = (torch.max(weak2.assemblies[-1][0]["torch.sum(spikes)"][0]) / weak2.size_e > 0.2).item()
-    strong_win = (torch.max(strong.assemblies[-1][0]["torch.sum(spikes)"][0]) / strong.size_e > 0.2).item()
+    weak1_win = (torch.max(weak1.assemblies[-1][0]["torch.sum(spikes)"][0]) / weak1.size_e > 0.3).item()
+    weak2_win = (torch.max(weak2.assemblies[-1][0]["torch.sum(spikes)"][0]) / weak2.size_e > 0.3).item()
+    strong_win = (torch.max(strong.assemblies[-1][0]["torch.sum(spikes)"][0]) / strong.size_e > 0.3).item()
 
     weak1_over = (weak1.assemblies[-10][0]["torch.sum(spikes)"][0][torch.argmax(weak1.assemblies[-1][0]["torch.sum(spikes)"][0])] / weak1.size_e > 0.3).item()
     weak2_over = (weak2.assemblies[-10][0]["torch.sum(spikes)"][0][torch.argmax(weak2.assemblies[-1][0]["torch.sum(spikes)"][0])] / weak2.size_e > 0.3).item()
@@ -18,13 +18,14 @@ def get_winner(weak1, weak2, strong) :
     weak_win = weak1_win & weak2_win
     weak_over = weak1_over & weak2_over 
 
-    # strong win
-    if(strong_win) : 
-        return 2
 
     # Weak sequences win
     if(weak_win and not weak_over) : 
         return 1
+
+    # strong win
+    if(strong_win) : 
+        return 2
 
     # no win
     return 0
@@ -73,7 +74,6 @@ class Simulation() :
             "P_RC" : P_RC,
             "P_FF" : P_FF,
             "P_FF_I" : P_FF_I,
-
             "tau_e" : self.params["tau_e"],
             "tau_i" : self.params["tau_i"],
             "R_i" : self.params["R_i"],
@@ -81,6 +81,11 @@ class Simulation() :
             "threshold" : self.params["threshold"],
             "v_rest" : self.params["v_rest"],
             "v_reset" : self.params["v_reset"],
+            "delta" : self.params["delta"],
+            "alpha" : self.params["alpha"],
+            "theta_rh" : self.params["theta_rh"],
+            "beta" : self.params["beta"],
+            "w_tau" : self.params["w_tau"]
         }
 
         strong_seq = Sequence(
@@ -97,7 +102,6 @@ class Simulation() :
             "P_RC" : P_RC,
             "P_FF" : P_FF,
             "P_FF_I" : P_FF_I,
-
             "tau_e" : self.params["tau_e"],
             "tau_i" : self.params["tau_i"],
             "R_i" : self.params["R_i"],
@@ -105,6 +109,11 @@ class Simulation() :
             "threshold" : self.params["threshold"],
             "v_rest" : self.params["v_rest"],
             "v_reset" : self.params["v_reset"],
+            "delta" : self.params["delta"],
+            "alpha" : self.params["alpha"],
+            "theta_rh" : self.params["theta_rh"],
+            "beta" : self.params["beta"],
+            "w_tau" : self.params["w_tau"]
         }
 
         weak_seq_1 = Sequence(

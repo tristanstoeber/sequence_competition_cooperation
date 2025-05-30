@@ -22,6 +22,11 @@ params_base = {
     "threshold" : -45,
     "v_rest" : -65,
     "v_reset" : -70,
+    "delta" : 0,
+    "alpha" : 0,
+    "theta_rh" : 0,
+    "beta" : 20,
+    "w_tau" : 10,
 }
 
 params_base["W_RC_E"] = params_base["STRONG_SIZE_E"] * params_base["P_RC"] * params_base["EI_W"]
@@ -52,6 +57,11 @@ params_c0 = {
     "threshold" : -45,
     "v_rest" : -65,
     "v_reset" : -70,
+    "delta" : 0,
+    "alpha" : 0,
+    "theta_rh" : 0,
+    "beta" : 20,
+    "w_tau" : 10,
 }
 
 params_c0["W_RC_E"] = params_c0["STRONG_SIZE_E"] * params_c0["P_RC"] * params_c0["EI_W"]
@@ -82,6 +92,11 @@ params_c1 = {
     "threshold" : -45,
     "v_rest" : -65,
     "v_reset" : -70,
+    "delta" : 0,
+    "alpha" : 0,
+    "theta_rh" : 0,
+    "beta" : 20,
+    "w_tau" : 10,
 }       
 
 params_c1["W_RC_E"] = params_c1["STRONG_SIZE_E"] * params_c1["P_RC"] * params_c1["EI_W"]
@@ -113,6 +128,11 @@ params_c2 = {
     "threshold" : -45,
     "v_rest" : -65,
     "v_reset" : -70,
+    "delta" : 0,
+    "alpha" : 0,
+    "theta_rh" : 0,
+    "beta" : 20,
+    "w_tau" : 10,
 }
 
 params_c2["W_RC_E"] = params_c2["STRONG_SIZE_E"] * params_c2["P_RC"] * params_c2["EI_W"]
@@ -144,6 +164,11 @@ params_c3 = {
     "threshold" : -45,
     "v_rest" : -65,
     "v_reset" : -70,
+    "delta" : 0,
+    "alpha" : 0,
+    "theta_rh" : 0,
+    "beta" : 20,
+    "w_tau" : 10,
 }
 
 params_c3["W_RC_E"] = params_c3["STRONG_SIZE_E"] * params_c3["P_RC"] * params_c3["EI_W"]

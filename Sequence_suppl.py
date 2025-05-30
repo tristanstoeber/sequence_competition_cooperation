@@ -76,16 +76,22 @@ class Sequence() :
                 behavior = prioritize_behaviors([
                     SimpleDendriteStructure(),
                     SimpleDendriteComputation(),
-                    LIF(
+                    AELIF(
                         init_v = torch.rand(self.size_e) * -50 - 50,
                         tau = self.config["tau_e"],
                         R = self.config["R_e"],
                         threshold = self.config["threshold"],
                         v_rest = self.config["v_rest"],
                         v_reset = self.config["v_reset"],
+
+                        delta = self.config["delta"],
+                        alpha = self.config["alpha"],
+                        theta_rh = self.config["theta_rh"],
+                        beta = self.config["beta"],
+                        w_tau = self.config["w_tau"],
                     ),
                     Fire(),
-                    KWTA(k = self.size_e // 2),
+                    # KWTA(k = self.size_e // 2),
                     NeuronAxon(),
                 ]) | {
                     259 : BackgroundActivityCurrentBased(),
@@ -103,11 +109,11 @@ class Sequence() :
                     SimpleDendriteComputation(),
                     LIF(
                         init_v = -65,
-                        tau = self.config["tau_i"],
-                        R = self.config["R_i"],
-                        threshold = self.config["threshold"],
-                        v_rest = self.config["v_rest"],
-                        v_reset = self.config["v_reset"],
+                        tau = 4,
+                        R = 1,
+                        threshold = -45,
+                        v_rest = -65,
+                        v_reset = -70,
                     ),
                     # KWTA(k = 60),
                     Fire(),
