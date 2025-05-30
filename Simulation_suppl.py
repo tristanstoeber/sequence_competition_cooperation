@@ -90,6 +90,8 @@ class Simulation() :
             "P_RC" : P_RC,
             "P_FF" : P_FF,
             "P_FF_I" : P_FF_I,
+<<<<<<< Updated upstream
+=======
 
             "tau_e" : self.params["tau_e"],
             "tau_i" : self.params["tau_i"],
@@ -98,6 +100,12 @@ class Simulation() :
             "threshold" : self.params["threshold"],
             "v_rest" : self.params["v_rest"],
             "v_reset" : self.params["v_reset"],
+            "delta" : self.params["delta"],
+            "alpha" : self.params["alpha"],
+            "theta_rh" : self.params["theta_rh"],
+            "beta" : self.params["beta"],
+            "w_tau" : self.params["w_tau"]
+>>>>>>> Stashed changes
         }
 
         weak_seq_1 = Sequence(
