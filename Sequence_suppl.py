@@ -76,13 +76,8 @@ class Sequence() :
                 behavior = prioritize_behaviors([
                     SimpleDendriteStructure(),
                     SimpleDendriteComputation(),
-                    LIF(
+                    AELIF(
                         init_v = torch.rand(self.size_e) * -50 - 50,
-                        tau = 7,
-                        R = 0.55,
-                        threshold = -45,
-                        v_rest = -65,
-                        v_reset = -70,
                         tau = self.config["tau_e"],
                         R = self.config["R_e"],
                         threshold = self.config["threshold"],
